@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Recipe Chatbot</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Foodie Delight</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-center"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="menu.html">Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="feedback.html">Feedback</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="chat.html">My Recipes</a>
+            </li>
+          </ul>
+        </div>
+        <a href="login.html" class="btn btn-danger ms-auto">Login</a>
+      </div>
+    </nav>
+
+    <!-- Chatbot Container -->
+    <div class="container chat-container">
+      <h3 class="text-center"><b> AI Recipe Chatbot</b></h3>
+      <div class="chat-box" id="chatBox">
+        <div class="bot-message">
+          Hello! Tell me an ingredient or dish, and I'll suggest a recipe!
+        </div>
+      </div>
+
+      <!-- Input for Chat -->
+      <div class="input-group">
+        <input
+          type="text"
+          id="userInput"
+          class="form-control"
+          placeholder="Type your ingredient or dish..."
+        />
+        <button class="btn btn-send" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Foodie Delight. All rights reserved.</p>
+      <p>
+        <a href="#">Facebook</a> | <a href="#">Instagram</a> |
+        <a href="#">Twitter</a>
+      </p>
+    </footer>
+
+    <script>
+      let recipes = {};
+
+      // Load recipes.json using AJAX
+      $.getJSON("chat.json", function (data) {
+        recipes = data;
+      });
+
+      function sendMessage() {
+        let userInput = document.getElementById("userInput").value.trim();
+        if (userInput === "") return;
+
+        let chatBox = document.getElementById("chatBox");
+
+        // Add user message to chat
+        let userMessage = document.createElement("div");
+        userMessage.classList.add("user-message");
+        userMessage.innerText = userInput;
+        chatBox.appendChild(userMessage);
+
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // AI Response (with JSON)
+        setTimeout(() => {
+          let botMessage = document.createElement("div");
+          botMessage.classList.add("bot-message");
+
+          botMessage.innerText = getRecipeResponse(userInput);
+          chatBox.appendChild(botMessage);
+
+          // Apply animation to the bot's message
+          $(botMessage).hide().fadeIn(500);
+
+          // Scroll to bottom
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 1000);
+
+        // Clear input field
+        document.getElementById("userInput").value = "";
+      }
+
+      function getRecipeResponse(input) {
+        input = input.toLowerCase();
+        return (
+          recipes[input] ||
+          "Sorry, I don't have a recipe for that. Try another ingredient! 😊"
+        );
+      }
+    </script>
+  </body>
+</html>
